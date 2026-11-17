@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="uz" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psixolog Iroda — Ruhiy Salomatlik, Konsultatsiya va O'zini Anglash</title>
+    <meta name="description" content="Psixolog Iroda — individual konsultatsiya, oilaviy psixologiya, stress va xavotirni yengish, interaktiv psixologik test va 4-7-8 nafas olish mashqlari.">
+
+    <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN (Tashqi lokal fayllarsiz, 404 xatosi mutlaqo bo'lmaydi) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* =========================================================
+           1. PSIXOLOGIK TINCHLANTIRUVCHI RANG PALITRASI
+              (Warm Cream, Sage Green, Soft Terracotta & Deep Forest)
+           ========================================================= */
+        :root {
+            --bg-main: #FAF8F5;          /* Warm Cream */
+            --bg-card: #FFFFFF;          /* Pure Soft White */
+            --bg-soft: #EEF3EF;          /* Soft Sage Tint */
+            --bg-accent-soft: #F9EBE6;   /* Soft Terracotta Tint */
+            --text-main: #1F2E28;        /* Deep Forest Charcoal */
+            --text-muted: #52635B;       /* Muted Sage Grey */
+            --border-color: #DFE7E2;     /* Gentle Sage Border */
+            --sage: #4A7C65;             /* Primary Sage Green */
+            --sage-dark: #38614E;        /* Hover Sage */
+            --terracotta: #C97A63;       /* Warm Terracotta Accent */
+            --glass-bg: rgba(250, 248, 245, 0.86);
+        }
+
+        html.dark {
+            --bg-main: #111916;
+            --bg-card: #192420;
+            --bg-soft: #202E29;
+            --bg-accent-soft: #2E211D;
+            --text-main: #F2F5F3;
+            --text-muted: #A3B5AD;
+            --border-color: #293832;
+            --sage: #6CA389;
+            --sage-dark: #558A71;
+            --terracotta: #E08F78;
+            --glass-bg: rgba(17, 25, 22, 0.88);
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            transition: background-color 0.35s ease, color 0.35s ease;
+            overflow-x: hidden;
+        }
+
+        .psy-card {
+            background-color: var(--bg-card);
+            border-color: var(--border-color);
+            transition: background-color 0.35s ease, border-color 0.35s ease, transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .psy-soft-bg {
+            background-color: var(--bg-soft);
+        }
+
+        .glass-header {
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* =========================================================
+           2. 4-7-8 NAFAS OLISH DOIRASI ANIMATSIYASI
+           ========================================================= */
+        .breath-circle {
+            transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1), background-color 1.5s ease, box-shadow 1.5s ease;
+            transform: scale(1);
+        }
+        .breath-circle.inhale {
+            transition-duration: 4s;
+            transform: scale(1.42);
+            box-shadow: 0 0 45px rgba(74, 124, 101, 0.45);
+        }
+        .breath-circle.hold {
+            transition-duration: 0.4s;
+            transform: scale(1.42);
+            box-shadow: 0 0 55px rgba(201, 122, 99, 0.5);
+        }
+        .breath-circle.exhale {
+            transition-duration: 8s;
+            transform: scale(1);
+            box-shadow: 0 0 20px rgba(74, 124, 101, 0.2);
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-gentle-float {
+            animation: gentleFloat 6s ease-in-out infinite;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--sage);
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-[#4A7C65] selection:text-white">
+
+    <!-- Bildirishnomalar (Toast) konteyneri -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
+
+    <!-- =========================================================
+         1. STICKY GLASSMORPHISM NAVBAR
+         ========================================================= -->
+    <header class="fixed top-0 left-0 right-0 z-40 glass-header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                <!-- Logo -->
+                <a href="#hero" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white font-display font-extrabold text-xl shadow-md transition-transform group-hover:scale-105" style="background-color: var(--sage);">
+                        🌿
+                    </div>
+                    <div>
+                        <span class="font-display font-extrabold text-lg sm:text-xl tracking-tight block leading-none">
+                            Psixolog Iroda
+                        </span>
+                        <span class="text-[11px] font-medium tracking-wider uppercase" style="color: var(--terracotta);">
+                            Ruhiy muvozanat markazi
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Desktop Menyusi -->
+                <nav class="hidden lg:flex items-center gap-1">
+                    <a href="#about" class="px-3.5 py-2 rounded-xl text-sm font-medium hover:bg-[#4A7C65]/10 transition-colors">Psixolog haqida</a>
+                    <a href="#services" class="px-3.5 py-2 rounded-xl text-sm font-medium hover:bg-[#4A7C65]/10 transition-colors">Xizmatlar</a>
+                    <a href="#psy-test" class="px-3.5 py-2 rounded-xl text-sm font-medium hover:bg-[#4A7C65]/10 transition-colors">Stress testi</a>
+                    <a href="#mindfulness" class="px-3.5 py-2 rounded-xl text-sm font-medium hover:bg-[#4A7C65]/10 transition-colors">Nafas mashqi</a>
+                    <a href="#faq" class="px-3.5 py-2 rounded-xl text-sm font-medium hover:bg-[#4A7C65]/10 transition-colors">Savollar</a>
+                </nav>
+
+                <!-- O'ng tugmalar: Tungi rejim va Qabulga yozilish -->
+                <div class="flex items-center gap-2.5">
+                    <button onclick="toggleDarkMode()" id="theme-toggle-btn" title="Mavzuni o'zgartirish" aria-label="Mavzuni o'zgartirish" class="p-2.5 rounded-xl border psy-card shadow-sm hover:scale-105 transition-transform text-base">
+                        🌙
+                    </button>
+
+                    <button onclick="openBookingModal()" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-white text-sm font-semibold shadow-md transition-all hover:-translate-y-0.5" style="background-color: var(--sage);">
+                        <span>Qabulga yozilish</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </button>
+
+                    <!-- Mobil menyu tugmasi -->
+                    <button id="mobile-menu-btn" aria-label="Menyu" class="lg:hidden p-2.5 rounded-xl border psy-card">
+                        <svg id="icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                        <svg id="icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobil Dropdown Menyu -->
+        <div id="mobile-menu" class="hidden lg:hidden px-4 pt-2 pb-5 space-y-1.5 border-t" style="background-color: var(--bg-card); border-color: var(--border-color);">
+            <a href="#about" class="mobile-link block px-4 py-3 rounded-xl font-medium hover:bg-[#4A7C65]/10">Psixolog haqida</a>
+            <a href="#services" class="mobile-link block px-4 py-3 rounded-xl font-medium hover:bg-[#4A7C65]/10">Konsultatsiya yo'nalishlari</a>
+            <a href="#psy-test" class="mobile-link block px-4 py-3 rounded-xl font-medium hover:bg-[#4A7C65]/10">Psixologik stress testi</a>
+            <a href="#mindfulness" class="mobile-link block px-4 py-3 rounded-xl font-medium hover:bg-[#4A7C65]/10">4-7-8 Nafas mashqi & Maslahatlar</a>
+            <a href="#faq" class="mobile-link block px-4 py-3 rounded-xl font-medium hover:bg-[#4A7C65]/10">Ko'p beriladigan savollar</a>
+            <a href="#contact" class="mobile-link block px-4 py-3 rounded-xl font-medium hover:bg-[#4A7C65]/10">Bog'lanish</a>
+            <button onclick="openBookingModal()" class="w-full mt-2 py-3.5 rounded-xl text-white font-semibold" style="background-color: var(--sage);">
+                📅 Onlayn konsultatsiyaga yozilish
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- =========================================================
+             2. HERO SECTION (TINCHLANTIRUVCHI DIZAYN + TEZKOR CTA)
+             ========================================================= -->
+        <section id="hero" class="relative pt-28 pb-20 md:pt-36 md:pb-28 overflow-hidden">
+            <!-- Dekorativ yumshoq fon doiralari -->
+            <div class="absolute top-20 -left-24 w-72 h-72 rounded-full opacity-35 blur-3xl pointer-events-none" style="background-color: var(--sage);"></div>
+            <div class="absolute bottom-10 -right-24 w-80 h-80 rounded-full opacity-30 blur-3xl pointer-events-none" style="background-color: var(--terracotta);"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <!-- Chap taraf: Asosiy murojaat -->
+                    <div class="lg:col-span-7 text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border psy-card shadow-sm text-xs sm:text-sm font-semibold mb-6">
+                            <span class="w-2.5 h-2.5 rounded-full" style="background-color: var(--sage);"></span>
+                            <span>100% Maxfiylik • Empatiya • Ilmiy yondashuv</span>
+                        </div>
+
+                        <h1 class="font-display font-extrabold text-3xl sm:text-5xl lg:text-[3.35rem] tracking-tight leading-[1.15] mb-6">
+                            Qalbingizdagi xotirjamlik va <span style="color: var(--sage);">ichki uyg'unlikka</span> birgalikda yo'l topamiz
+                        </h1>
+
+                        <p class="text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed" style="color: var(--text-muted);">
+                            Assalomu alaykum! Men <strong>Iroda</strong> — amaliyotchi psixolog va konsultantman. Hayotiy qiyinchiliklar, ichki xavotir, oilaviy tushunmovchiliklar yoki o'zingizni anglash yo'lida sizga xavfsiz, samimiy va professional yordam ko'rsataman.
+                        </p>
+
+                        <!-- Harakatga chorlovchi tugmalar -->
+                        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10">
+                            <button onclick="openBookingModal()" class="w-full sm:w-auto px-8 py-4 rounded-2xl text-white font-semibold shadow-lg transition-all hover:-translate-y-1 flex items-center justify-center gap-2.5" style="background-color: var(--sage);">
+                                <span>Konsultatsiyaga yozilish</span>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </button>
+                            <a href="#psy-test" class="w-full sm:w-auto px-8 py-4 rounded-2xl border psy-card font-semibold shadow-sm transition-all hover:-translate-y-1 flex items-center justify-center gap-2">
+                                <span>🧠 Stress darajasini tekshirish</span>
+                            </a>
+                        </div>
+
+                        <!-- Qisqa ishonch ko'rsatkichlari -->
+                        <div class="grid grid-cols-3 gap-4 max-w-lg mx-auto lg:mx-0 pt-6 border-t" style="border-color: var(--border-color);">
+                            <div>
+                                <p class="font-display font-extrabold text-2xl sm:text-3xl" style="color: var(--sage);">5+ yil</p>
+                                <p class="text-xs sm:text-sm" style="color: var(--text-muted);">Amaliy tajriba</p>
+                            </div>
+                            <div>
+                                <p class="font-display font-extrabold text-2xl sm:text-3xl" style="color: var(--terracotta);">650+</p>
+                                <p class="text-xs sm:text-sm" style="color: var(--text-muted);">Muvaffaqiyatli sessiyalar</p>
+                            </div>
+                            <div>
+                                <p class="font-display font-extrabold text-2xl sm:text-3xl" style="color: var(--sage);">100%</p>
+                                <p class="text-xs sm:text-sm" style="color: var(--text-muted);">Konfidensiallik</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- O'ng taraf: Sof SVG Psixolog Portreti va Harmoniya Illyustratsiyasi (404 xatosiz) -->
+                    <div class="lg:col-span-5 flex justify-center">
+                        <div class="relative w-72 h-72 sm:w-88 sm:h-88 lg:w-[25rem] lg:h-[25rem] animate-gentle-float">
+                            <div class="absolute inset-0 rounded-[2.5rem] rotate-3 opacity-35" style="background-color: var(--sage);"></div>
+                            <div class="relative w-full h-full rounded-[2.5rem] border psy-card shadow-xl p-6 flex flex-col items-center justify-center overflow-hidden">
+                                <!-- Inline SVG: Harmoniya, Tabiat va Psixolog Iroda Illyustratsiyasi -->
+                                <svg viewBox="0 0 300 300" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <linearGradient id="calmBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#EEF3EF"/>
+                                            <stop offset="100%" stop-color="#F9EBE6"/>
+                                        </linearGradient>
+                                        <linearGradient id="sageDress" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#4A7C65"/>
+                                            <stop offset="100%" stop-color="#38614E"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <rect width="300" height="300" rx="28" fill="url(#calmBg)"/>
+                                    <!-- Tinchlantiruvchi botanika barglari (chap va o'ng) -->
+                                    <path d="M40 230 Q35 170 80 150 Q70 200 40 230 Z" fill="#4A7C65" opacity="0.22"/>
+                                    <path d="M260 220 Q265 160 220 140 Q230 190 260 220 Z" fill="#C97A63" opacity="0.22"/>
+                                    <circle cx="150" cy="125" r="78" fill="#FFFFFF" opacity="0.65"/>
+
+                                    <!-- Soch (orqa qism) -->
+                                    <path d="M92 128 C92 64, 208 64, 208 128 L216 225 C216 235, 84 235, 84 225 Z" fill="#2C2523"/>
+                                    <!-- Klassik Sage Green kostyum/libos -->
+                                    <path d="M74 275 C74 220, 112 200, 150 200 C188 200, 226 220, 226 275 Z" fill="url(#sageDress)"/>
+                                    <!-- Yoqa detali -->
+                                    <path d="M128 200 L150 232 L172 200" fill="#FAF8F5"/>
+                                    <!-- Bo'yin -->
+                                    <rect x="137" y="168" width="26" height="36" rx="12" fill="#F6D2B8"/>
+                                    <!-- Yuz -->
+                                    <path d="M108 124 C108 88, 192 88, 192 124 C192 162, 174 182, 150 182 C126 182, 108 162, 108 124 Z" fill="#FDE0C8"/>
+                                    <!-- Old soch chizig'i -->
+                                    <path d="M106 124 C106 80, 194 80, 194 124 C178 102, 158 102, 148 114 C135 102, 118 106, 106 124 Z" fill="#2C2523"/>
+                                    <!-- Ko'zlar (mehrli va xotirjam nigoh) -->
+                                    <circle cx="132" cy="136" r="4.8" fill="#1F2E28"/>
+                                    <circle cx="168" cy="136" r="4.8" fill="#1F2E28"/>
+                                    <circle cx="133.5" cy="134.5" r="1.6" fill="#FFFFFF"/>
+                                    <circle cx="169.5" cy="134.5" r="1.6" fill="#FFFFFF"/>
+                                    <!-- Tabassum -->
+                                    <path d="M139 155 Q150 164 161 155" stroke="#B55D47" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+                                    <!-- Qo'lda kichik yurak/yaproq ramzi -->
+                                    <circle cx="150" cy="248" r="12" fill="#C97A63" opacity="0.9"/>
+                                    <path d="M150 242 C154 242, 156 248, 150 254 C144 248, 146 242, 150 242 Z" fill="#FFFFFF"/>
+                                </svg>
+
+                                <!-- Pastki ma'lumot belgisi -->
+                                <div class="w-full mt-2 px-4 py-3 rounded-2xl psy-soft-bg flex items-center justify-between text-xs sm:text-sm font-semibold">
+                                    <span>🌿 Psixolog Iroda</span>
+                                    <span style="color: var(--terracotta);">Onlayn & Oflayn qabul</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             3. ABOUT IRODA & QUALIFICATIONS SECTION
+             ========================================================= -->
+        <section id="about" class="py-20 border-t" style="border-color: var(--border-color);">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <div class="lg:col-span-6">
+                        <span class="text-xs sm:text-sm font-bold uppercase tracking-widest" style="color: var(--terracotta);">Psixolog haqida</span>
+                        <h2 class="font-display font-extrabold text-3xl sm:text-4xl mt-2 mb-5 leading-tight">
+                            Har bir insonning ichida o'zini davolash va tiklanish kuchi bor
+                        </h2>
+                        <p class="text-sm sm:text-base leading-relaxed mb-4" style="color: var(--text-muted);">
+                            Mening asosiy maqsadim — sizga tayyor maslahatlar berish emas, balki ichki ovozingizni eshitishingizga, hissiyotlaringizni anglashingizga va hayotingizda ongli qarorlar qabul qilishingizga ko'maklashishdir.
+                        </p>
+                        <p class="text-sm sm:text-base leading-relaxed mb-6" style="color: var(--text-muted);">
+                            Konsultatsiyalarda zamonaviy va ilmiy tasdiqlangan usullardan — <strong>Kognitiv-xulq-atvor terapiyasi (KXT/CBT)</strong>, <strong>Geshtalt yondashuv</strong> hamda <strong>Art-terapiya</strong> elementlaridan foydalanaman.
+                        </p>
+
+                        <!-- Ta'lim va malaka ro'yxati -->
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3.5 p-4 rounded-2xl psy-soft-bg">
+                                <span class="text-xl">🎓</span>
+                                <div>
+                                    <h4 class="font-bold text-sm sm:text-base">Oliy psixologik ma'lumot</h4>
+                                    <p class="text-xs sm:text-sm" style="color: var(--text-muted);">Amaliy psixologiya va shaxsiy rivojlanish yo'nalishi bo'yicha bakalavr va magistratura.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3.5 p-4 rounded-2xl psy-soft-bg">
+                                <span class="text-xl">📜</span>
+                                <div>
+                                    <h4 class="font-bold text-sm sm:text-base">Sertifikatlangan KXT va Oilaviy konsultant</h4>
+                                    <p class="text-xs sm:text-sm" style="color: var(--text-muted);">Xavotir, emotsional charchoq va shaxslararo munosabatlar bo'yicha maxsus malaka oshirish kurslari.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3 ta asosiy tamoyil kartochkalari -->
+                    <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div class="p-6 rounded-3xl border psy-card shadow-sm">
+                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-4" style="background-color: var(--bg-soft);">🔒</div>
+                            <h3 class="font-display font-bold text-lg mb-2">To'liq maxfiylik</h3>
+                            <p class="text-sm leading-relaxed" style="color: var(--text-muted);">Sessiya davomida aytilgan har bir so'z va kechinma qat'iy ravishda sir saqlanadi.</p>
+                        </div>
+
+                        <div class="p-6 rounded-3xl border psy-card shadow-sm">
+                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-4" style="background-color: var(--bg-accent-soft);">🤍</div>
+                            <h3 class="font-display font-bold text-lg mb-2">Hukmsiz muhit</h3>
+                            <p class="text-sm leading-relaxed" style="color: var(--text-muted);">Bu yerda sizni hech kim ayblamaydi yoki tanqid qilmaydi — sizni tinglashadi va tushunishadi.</p>
+                        </div>
+
+                        <div class="p-6 rounded-3xl border psy-card shadow-sm sm:col-span-2">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl shrink-0 flex items-center justify-center text-2xl" style="background-color: var(--bg-soft);">🌱</div>
+                                <div>
+                                    <h3 class="font-display font-bold text-lg mb-1">Individual yondashuv</h3>
+                                    <p class="text-sm leading-relaxed" style="color: var(--text-muted);">Har bir insonning hayot yo'li betakror. Shu bois har bir mijoz bilan uning shaxsiy holati va sur'atiga mos reja asosida ishlaymiz.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             4. SERVICES & THERAPY DIRECTIONS (INTERAKTIV BATAFSIL)
+             ========================================================= -->
+        <section id="services" class="py-20 border-t" style="border-color: var(--border-color);">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-14">
+                    <span class="text-xs sm:text-sm font-bold uppercase tracking-widest" style="color: var(--terracotta);">Yo'nalishlar</span>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-4xl mt-2">Konsultatsiya va Terapiya Xizmatlari</h2>
+                    <p class="mt-3 text-sm sm:text-base" style="color: var(--text-muted);">O'zingizga kerakli yo'nalishni tanlang va batafsil ma'lumot oling</p>
+                </div>
+
+                <!-- 4 ta xizmat kartasi -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="services-grid">
+                    <!-- Xizmat 1 -->
+                    <div class="p-7 rounded-3xl border psy-card shadow-sm hover:-translate-y-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl" style="background-color: var(--bg-soft);">🌿</span>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold" style="background-color: var(--bg-soft); color: var(--sage);">50 daqiqa • Onlayn / Oflayn</span>
+                            </div>
+                            <h3 class="font-display font-bold text-xl mb-2">Individual konsultatsiya</h3>
+                            <p class="text-sm leading-relaxed mb-4" style="color: var(--text-muted);">
+                                Shaxsiy muammolar, ichki ziddiyatlar, qaror qabul qilishdagi ikkilanishlar va hayotiy inqirozlardan chiqishda yuzma-yuz yoki video-aloqa orqali yordam.
+                            </p>
+                            <div id="service-detail-1" class="hidden p-4 rounded-2xl psy-soft-bg text-xs sm:text-sm mb-4 space-y-1.5">
+                                <p><strong>Nimalar bilan ishlaymiz:</strong> O'ziga ishonchsizlik, chegaralarni belgilash, yolg'izlik hissi, hayotiy maqsadlarni aniqlash.</p>
+                                <p><strong>Natija:</strong> Ichki tayanch hissi, hissiy barqarorlik va aniq harakatlar rejasi.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 pt-2">
+                            <button onclick="toggleServiceDetail(1, this)" class="px-4 py-2.5 rounded-xl border psy-card text-xs sm:text-sm font-semibold hover:bg-[#4A7C65]/10 transition-colors">
+                                Batafsil ma'lumot ↓
+                            </button>
+                            <button onclick="openBookingModal('Individual konsultatsiya')" class="flex-1 py-2.5 px-4 rounded-xl text-white text-xs sm:text-sm font-semibold transition-opacity hover:opacity-95" style="background-color: var(--sage);">
+                                Yozilish
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Xizmat 2 -->
+                    <div class="p-7 rounded-3xl border psy-card shadow-sm hover:-translate-y-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl" style="background-color: var(--bg-accent-soft);">🏡</span>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold" style="background-color: var(--bg-accent-soft); color: var(--terracotta);">60–80 daqiqa • Juftlik / Yakka</span>
+                            </div>
+                            <h3 class="font-display font-bold text-xl mb-2">Oilaviy psixologiya</h3>
+                            <p class="text-sm leading-relaxed mb-4" style="color: var(--text-muted);">
+                                Er-xotin o'rtasidagi munosabatlarni yaxshilash, nizolarni sog'lom hal qilish, o'zaro tushunish va oilaviy iliqlikni qayta tiklash bo'yicha maslahatlar.
+                            </p>
+                            <div id="service-detail-2" class="hidden p-4 rounded-2xl psy-soft-bg text-xs sm:text-sm mb-4 space-y-1.5">
+                                <p><strong>Nimalar bilan ishlaymiz:</strong> Muloqotdagi to'siqlar, ishonch inqirozi, ota-ona va farzand munosabatlari.</p>
+                                <p><strong>Natija:</strong> Bir-birini eshitish madaniyati va sog'lom oilaviy muhit.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 pt-2">
+                            <button onclick="toggleServiceDetail(2, this)" class="px-4 py-2.5 rounded-xl border psy-card text-xs sm:text-sm font-semibold hover:bg-[#4A7C65]/10 transition-colors">
+                                Batafsil ma'lumot ↓
+                            </button>
+                            <button onclick="openBookingModal('Oilaviy psixologiya')" class="flex-1 py-2.5 px-4 rounded-xl text-white text-xs sm:text-sm font-semibold transition-opacity hover:opacity-95" style="background-color: var(--sage);">
+                                Yozilish
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Xizmat 3 -->
+                    <div class="p-7 rounded-3xl border psy-card shadow-sm hover:-translate-y-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl" style="background-color: var(--bg-soft);">🌤️</span>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold" style="background-color: var(--bg-soft); color: var(--sage);">50 daqiqa • KXT metodikasi</span>
+                            </div>
+                            <h3 class="font-display font-bold text-xl mb-2">Stress va depressiya bilan ishlash</h3>
+                            <p class="text-sm leading-relaxed mb-4" style="color: var(--text-muted);">
+                                Surunkali charchoq, vahima hujumlari (panic attack), uyqusizlik, doimiy xavotir va apatiya holatidan bosqichma-bosqich chiqish.
+                            </p>
+                            <div id="service-detail-3" class="hidden p-4 rounded-2xl psy-soft-bg text-xs sm:text-sm mb-4 space-y-1.5">
+                                <p><strong>Nimalar bilan ishlaymiz:</strong> Salbiy avtomatik fikrlarni o'zgartirish, emotsional charchoq (burnout) profilaktikasi.</p>
+                                <p><strong>Natija:</strong> Yengillik hissi, hayotga qiziqishning qaytishi va stressga chidamlilik.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 pt-2">
+                            <button onclick="toggleServiceDetail(3, this)" class="px-4 py-2.5 rounded-xl border psy-card text-xs sm:text-sm font-semibold hover:bg-[#4A7C65]/10 transition-colors">
+                                Batafsil ma'lumot ↓
+                            </button>
+                            <button onclick="openBookingModal('Stress va depressiya bilan ishlash')" class="flex-1 py-2.5 px-4 rounded-xl text-white text-xs sm:text-sm font-semibold transition-opacity hover:opacity-95" style="background-color: var(--sage);">
+                                Yozilish
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Xizmat 4 -->
+                    <div class="p-7 rounded-3xl border psy-card shadow-sm hover:-translate-y-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl" style="background-color: var(--bg-accent-soft);">✨</span>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold" style="background-color: var(--bg-accent-soft); color: var(--terracotta);">50 daqiqa • Shaxsiy o'sish</span>
+                            </div>
+                            <h3 class="font-display font-bold text-xl mb-2">O'zini anglash va shaxsiy rivojlanish</h3>
+                            <p class="text-sm leading-relaxed mb-4" style="color: var(--text-muted);">
+                                O'z qadrini bilish (samootsenka), ichki salohiyatni ochish, qo'rquvlarni yengish va o'zingiz xohlagan hayotni qurish yo'lida hamrohlik.
+                            </p>
+                            <div id="service-detail-4" class="hidden p-4 rounded-2xl psy-soft-bg text-xs sm:text-sm mb-4 space-y-1.5">
+                                <p><strong>Nimalar bilan ishlaymiz:</strong> Imposter sindromi, perfectionizm, shaxsiy qadriyatlar tizimi.</p>
+                                <p><strong>Natija:</strong> O'ziga bo'lgan sog'lom sevgi, ishonch va ichki erkinlik.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 pt-2">
+                            <button onclick="toggleServiceDetail(4, this)" class="px-4 py-2.5 rounded-xl border psy-card text-xs sm:text-sm font-semibold hover:bg-[#4A7C65]/10 transition-colors">
+                                Batafsil ma'lumot ↓
+                            </button>
+                            <button onclick="openBookingModal('O\'zini anglash va shaxsiy rivojlanish')" class="flex-1 py-2.5 px-4 rounded-xl text-white text-xs sm:text-sm font-semibold transition-opacity hover:opacity-95" style="background-color: var(--sage);">
+                                Yozilish
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             5. INTERACTIVE PSYCHOLOGICAL SELF-CHECK (5-SAVOLLIK TEST)
+             ========================================================= -->
+        <section id="psy-test" class="py-20 border-t" style="border-color: var(--border-color);">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <span class="text-xs sm:text-sm font-bold uppercase tracking-widest" style="color: var(--terracotta);">O'z-o'zini tekshirish</span>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-4xl mt-2">Psixologik Holat va Stress Darajasi Testi</h2>
+                    <p class="mt-3 text-sm sm:text-base" style="color: var(--text-muted);">
+                        So'nggi 2 hafta davomidagi hissiy holatingizni baholash uchun 5 ta qisqa savolga javob bering
+                    </p>
+                </div>
+
+                <div class="p-6 sm:p-10 rounded-3xl border psy-card shadow-lg">
+                    <!-- Test jarayoni -->
+                    <div id="quiz-container">
+                        <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider mb-3" style="color: var(--text-muted);">
+                            <span id="quiz-step-label">1-savol / 5</span>
+                            <span id="quiz-percent-label">20%</span>
+                        </div>
+                        <!-- Progress bar -->
+                        <div class="w-full h-2.5 rounded-full psy-soft-bg mb-8 overflow-hidden">
+                            <div id="quiz-progress-bar" class="h-full rounded-full transition-all duration-300" style="width: 20%; background-color: var(--sage);"></div>
+                        </div>
+
+                        <h3 id="quiz-question" class="font-display font-bold text-xl sm:text-2xl mb-6 leading-snug">
+                            <!-- Savol JS orqali chiqadi -->
+                        </h3>
+
+                        <div id="quiz-options" class="space-y-3">
+                            <!-- Variantlar JS orqali chiqadi -->
+                        </div>
+                    </div>
+
+                    <!-- Test natijasi (yashirin holatda) -->
+                    <div id="quiz-result" class="hidden text-center py-4">
+                        <div id="result-badge" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4"></div>
+                        <h3 id="result-title" class="font-display font-extrabold text-2xl sm:text-3xl mb-3"></h3>
+                        <p id="result-desc" class="text-sm sm:text-base max-w-2xl mx-auto leading-relaxed mb-6" style="color: var(--text-muted);"></p>
+
+                        <div class="p-5 rounded-2xl psy-soft-bg text-left max-w-xl mx-auto mb-8">
+                            <h4 class="font-bold text-sm mb-2 flex items-center gap-2">
+                                <span>💡 Psixolog Irodaning tavsiyasi:</span>
+                            </h4>
+                            <p id="result-advice" class="text-xs sm:text-sm leading-relaxed" style="color: var(--text-muted);"></p>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                            <button onclick="openBookingModal('Stress testi natijasi bo\'yicha konsultatsiya')" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl text-white font-semibold text-sm shadow-md" style="background-color: var(--sage);">
+                                🌿 Psixolog bilan muhokama qilish
+                            </button>
+                            <button onclick="restartQuiz()" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl border psy-card font-semibold text-sm hover:bg-[#4A7C65]/10">
+                                🔄 Testni qayta topshirish
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             6. INTERACTIVE 4-7-8 BREATHING TIMER & DAILY ADVICE GENERATOR
+             ========================================================= -->
+        <section id="mindfulness" class="py-20 border-t" style="border-color: var(--border-color);">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-14">
+                    <span class="text-xs sm:text-sm font-bold uppercase tracking-widest" style="color: var(--terracotta);">Darhol yordam</span>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-4xl mt-2">Tinchlanish Amaliyoti va Kun Maslahati</h2>
+                    <p class="mt-3 text-sm sm:text-base" style="color: var(--text-muted);">Xavotirni kamaytirish uchun ilmiy asoslangan 4-7-8 nafas olish texnikasini sinab ko'ring</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                    <!-- A) 4-7-8 NAFAS OLISH MASHQI TAYMERI -->
+                    <div class="lg:col-span-7 p-6 sm:p-8 rounded-3xl border psy-card shadow-lg flex flex-col items-center justify-between text-center">
+                        <div>
+                            <h3 class="font-display font-bold text-xl sm:text-2xl mb-1">🌬️ 4-7-8 Nafas Olish Mashqi</h3>
+                            <p class="text-xs sm:text-sm" style="color: var(--text-muted);">4 soniya nafas oling • 7 soniya ushlab turing • 8 soniya sekin chiqaring</p>
+                        </div>
+
+                        <!-- Animatsiyali vizual doira -->
+                        <div class="relative my-10 w-52 h-52 sm:w-60 sm:h-60 flex items-center justify-center">
+                            <div class="absolute inset-0 rounded-full border-2 border-dashed opacity-30" style="border-color: var(--sage);"></div>
+                            <div id="breath-circle" class="breath-circle w-36 h-36 sm:w-40 sm:h-40 rounded-full flex flex-col items-center justify-center text-white shadow-xl" style="background-color: var(--sage);">
+                                <span id="breath-phase-text" class="font-display font-bold text-base sm:text-lg px-2">Tayyormisiz?</span>
+                                <span id="breath-timer-num" class="font-display font-extrabold text-2xl sm:text-3xl mt-1">4-7-8</span>
+                            </div>
+                        </div>
+
+                        <div class="w-full max-w-md">
+                            <p id="breath-cycle-counter" class="text-xs font-semibold mb-4" style="color: var(--text-muted);">Bajarilgan sikllar: 0</p>
+                            <div class="flex items-center justify-center gap-3">
+                                <button id="breath-start-btn" onclick="startBreathingExercise()" class="flex-1 py-3.5 px-6 rounded-2xl text-white font-semibold text-sm shadow-md transition-all" style="background-color: var(--sage);">
+                                    ▶ Mashqni boshlash
+                                </button>
+                                <button id="breath-stop-btn" onclick="stopBreathingExercise()" class="py-3.5 px-5 rounded-2xl border psy-card font-semibold text-sm hover:bg-rose-500/10 transition-colors">
+                                    ⏹ To'xtatish
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- B) KUNLIK PSIXOLOGIK AFFIRMATSIYA VA MASLAHAT GENERATORI -->
+                    <div class="lg:col-span-5 p-6 sm:p-8 rounded-3xl border psy-card shadow-lg flex flex-col justify-between">
+                        <div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style="background-color: var(--bg-accent-soft); color: var(--terracotta);">
+                                ✨ Kunlik Psixologik Affirmatsiya
+                            </div>
+                            <h3 class="font-display font-bold text-xl sm:text-2xl mb-2">Qalbingiz uchun iliq so'z</h3>
+                            <p class="text-xs sm:text-sm mb-6" style="color: var(--text-muted);">Hozirgi ichki holatingizga mos yo'nalishni tanlang:</p>
+
+                            <!-- Kategoriya tugmalari -->
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <button onclick="setAffirmationCategory('xotirjamlik')" data-cat="xotirjamlik" class="aff-cat-btn px-3.5 py-2 rounded-xl text-xs font-semibold border psy-card">🌿 Xotirjamlik</button>
+                                <button onclick="setAffirmationCategory('ishonch')" data-cat="ishonch" class="aff-cat-btn px-3.5 py-2 rounded-xl text-xs font-semibold border psy-card">💪 O'ziga ishonch</button>
+                                <button onclick="setAffirmationCategory('qabul')" data-cat="qabul" class="aff-cat-btn px-3.5 py-2 rounded-xl text-xs font-semibold border psy-card">🤍 O'zini qabul qilish</button>
+                            </div>
+
+                            <!-- Affirmatsiya kartasi -->
+                            <div class="p-6 rounded-2xl psy-soft-bg border mb-4" style="border-color: var(--border-color);">
+                                <p id="affirmation-text" class="font-medium text-base sm:text-lg italic leading-relaxed mb-3">
+                                    "Men hozirgi lahzada xavfsizman. Men hamma narsani bir zumda hal qilishga majbur emasman — kichik qadamlar ham yetarli."
+                                </p>
+                                <p id="affirmation-note" class="text-xs font-semibold" style="color: var(--sage);">
+                                    💡 Amaliy maslahat: Yelkalaringizni bo'sh qo'ying va chuqur nafas oling.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3 pt-2">
+                            <button onclick="nextAffirmation()" class="flex-1 py-3.5 px-4 rounded-2xl text-white font-semibold text-sm shadow-md" style="background-color: var(--terracotta);">
+                                🔄 Yangi affirmatsiya
+                            </button>
+                            <button onclick="copyAffirmation()" class="py-3.5 px-4 rounded-2xl border psy-card font-semibold text-sm hover:bg-[#4A7C65]/10" title="Nusxalash">
+                                📋 Nusxa
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             7. FAQ ACCORDION & CONTACT / TELEGRAM SECTION
+             ========================================================= -->
+        <section id="faq" class="py-20 border-t" style="border-color: var(--border-color);">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                    <!-- FAQ Akkordeon -->
+                    <div class="lg:col-span-7">
+                        <span class="text-xs sm:text-sm font-bold uppercase tracking-widest" style="color: var(--terracotta);">Ko'p beriladigan savollar</span>
+                        <h2 class="font-display font-extrabold text-3xl mt-2 mb-6">Konsultatsiya haqida savollar</h2>
+
+                        <div class="space-y-3" id="faq-list">
+                            <!-- Savol 1 -->
+                            <div class="rounded-2xl border psy-card overflow-hidden">
+                                <button onclick="toggleFaq(1)" class="w-full px-6 py-4 text-left font-bold text-sm sm:text-base flex items-center justify-between gap-4">
+                                    <span>Birinchi konsultatsiya qanday o'tadi?</span>
+                                    <span id="faq-icon-1" class="text-xl font-normal transition-transform">+</span>
+                                </button>
+                                <div id="faq-body-1" class="hidden px-6 pb-5 text-xs sm:text-sm leading-relaxed" style="color: var(--text-muted);">
+                                    Birinchi uchrashuv tanishuv va diagnostika shaklida o'tadi (50 daqiqa). Siz o'zingizni qiynayotgan vaziyatni bemalol gapirib berasiz, biz birgalikda asosiy so'rovni shakllantiramiz va keyingi ish rejasini belgilab olamiz.
+                                </div>
+                            </div>
+
+                            <!-- Savol 2 -->
+                            <div class="rounded-2xl border psy-card overflow-hidden">
+                                <button onclick="toggleFaq(2)" class="w-full px-6 py-4 text-left font-bold text-sm sm:text-base flex items-center justify-between gap-4">
+                                    <span>Onlayn konsultatsiya oflayn uchrashuv kabi samaralimi?</span>
+                                    <span id="faq-icon-2" class="text-xl font-normal transition-transform">+</span>
+                                </button>
+                                <div id="faq-body-2" class="hidden px-6 pb-5 text-xs sm:text-sm leading-relaxed" style="color: var(--text-muted);">
+                                    Ha, albatta. Zamonaviy tadqiqotlar shuni ko'rsatadiki, Telegram, Zoom yoki Google Meet orqali o'tkaziladigan onlayn sessiyalar samaradorlik jihatidan yuzma-yuz uchrashuvlardan qolishmaydi. Muhimi — tinch joy va barqaror internet bo'lishi.
+                                </div>
+                            </div>
+
+                            <!-- Savol 3 -->
+                            <div class="rounded-2xl border psy-card overflow-hidden">
+                                <button onclick="toggleFaq(3)" class="w-full px-6 py-4 text-left font-bold text-sm sm:text-base flex items-center justify-between gap-4">
+                                    <span>Mening shaxsiy ma'lumotlarim sir saqlanadimi?</span>
+                                    <span id="faq-icon-3" class="text-xl font-normal transition-transform">+</span>
+                                </button>
+                                <div id="faq-body-3" class="hidden px-6 pb-5 text-xs sm:text-sm leading-relaxed" style="color: var(--text-muted);">
+                                    Mutlaqo. Psixologik etika kodeksiga binoan, mijozning ismi, murojaat sababi va sessiya davomida muhokama qilingan barcha ma'lumotlar 100% maxfiy saqlanadi.
+                                </div>
+                            </div>
+
+                            <!-- Savol 4 -->
+                            <div class="rounded-2xl border psy-card overflow-hidden">
+                                <button onclick="toggleFaq(4)" class="w-full px-6 py-4 text-left font-bold text-sm sm:text-base flex items-center justify-between gap-4">
+                                    <span>Nechta konsultatsiya kerak bo'ladi?</span>
+                                    <span id="faq-icon-4" class="text-xl font-normal transition-transform">+</span>
+                                </button>
+                                <div id="faq-body-4" class="hidden px-6 pb-5 text-xs sm:text-sm leading-relaxed" style="color: var(--text-muted);">
+                                    Bu sizning maqsadingizga bog'liq. Ba'zan aniq bir qaror qabul qilish uchun 1–2 ta uchrashuv yetarli bo'ladi. Chuqurroq ichki o'zgarishlar uchun esa odatda haftasiga 1 martadan 5–10 ta sessiya tavsiya etiladi.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bog'lanish va Qabul tarixi kartasi -->
+                    <div id="contact" class="lg:col-span-5 space-y-6">
+                        <div class="p-7 rounded-3xl border psy-card shadow-lg">
+                            <h3 class="font-display font-bold text-2xl mb-2">Bog'lanish va Ijtimoiy tarmoqlar</h3>
+                            <p class="text-sm mb-6" style="color: var(--text-muted);">
+                                Savollaringiz bo'lsa yoki to'g'ridan-to'g'ri yozishni istasangiz, quyidagi kanallar orqali bog'lanishingiz mumkin:
+                            </p>
+
+                            <div class="space-y-3 mb-6">
+                                <a href="https://t.me/" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-4 rounded-2xl psy-soft-bg hover:opacity-90 transition-opacity font-semibold text-sm">
+                                    <span class="flex items-center gap-3">
+                                        <span class="text-xl">✈️</span>
+                                        <span>Telegram orqali yozish</span>
+                                    </span>
+                                    <span style="color: var(--sage);">@psixolog_iroda →</span>
+                                </a>
+
+                                <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-4 rounded-2xl psy-soft-bg hover:opacity-90 transition-opacity font-semibold text-sm">
+                                    <span class="flex items-center gap-3">
+                                        <span class="text-xl">📸</span>
+                                        <span>Instagram sahifa</span>
+                                    </span>
+                                    <span style="color: var(--terracotta);">@iroda.psixolog →</span>
+                                </a>
+
+                                <div class="flex items-center justify-between p-4 rounded-2xl psy-soft-bg font-semibold text-sm">
+                                    <span class="flex items-center gap-3">
+                                        <span class="text-xl">📍</span>
+                                        <span>Qabul formati</span>
+                                    </span>
+                                    <span style="color: var(--text-muted);">Toshkent & Butun dunyo (Onlayn)</span>
+                                </div>
+                            </div>
+
+                            <button onclick="openBookingModal()" class="w-full py-4 rounded-2xl text-white font-semibold text-sm shadow-md transition-all hover:-translate-y-0.5" style="background-color: var(--sage);">
+                                📅 Qabulga onlayn yozilish
+                            </button>
+                        </div>
+
+                        <!-- Mijozning saqlangan yozuvlari (LocalStorage History) -->
+                        <div class="p-6 rounded-3xl border psy-card">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-display font-bold text-base">🗂️ Mening yozuvlarim (Tarix)</h4>
+                                <button onclick="clearBookingHistory()" class="text-xs text-rose-500 hover:underline">Tozalash</button>
+                            </div>
+                            <div id="booking-history-list" class="space-y-2.5 text-xs sm:text-sm">
+                                <!-- JS orqali localStorage'dan chiqariladi -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- =========================================================
+         8. FOOTER
+         ========================================================= -->
+    <footer class="py-10 border-t" style="border-color: var(--border-color);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2.5">
+                <span class="text-xl">🌿</span>
+                <span class="font-display font-bold text-lg">Psixolog Iroda</span>
+            </div>
+            <p class="text-xs sm:text-sm text-center" style="color: var(--text-muted);">
+                © <span id="year"></span> Psixolog Iroda. Barcha huquqlar himoyalangan. Ruhiy salomatlik — eng katta boylik.
+            </p>
+            <a href="#hero" class="px-4 py-2 rounded-xl psy-soft-bg text-xs sm:text-sm font-semibold hover:opacity-80">
+                ↑ Yuqoriga
+            </a>
+        </div>
+    </footer>
+
+    <!-- =========================================================
+         9. ONLINE APPOINTMENT BOOKING MODAL (QABULGA YOZILISH)
+         ========================================================= -->
+    <div id="booking-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/55 backdrop-blur-sm">
+        <div class="w-full max-w-lg rounded-3xl border psy-card p-6 sm:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+            <button onclick="closeBookingModal()" aria-label="Yopish" class="absolute top-5 right-5 w-9 h-9 rounded-full border psy-card flex items-center justify-center hover:bg-rose-500 hover:text-white transition-colors">
+                ✕
+            </button>
+
+            <span class="text-xs font-bold uppercase tracking-widest" style="color: var(--terracotta);">Onlayn ro'yxatdan o'tish</span>
+            <h3 class="font-display font-extrabold text-2xl mt-1 mb-2">Konsultatsiyaga yozilish</h3>
+            <p class="text-xs sm:text-sm mb-6" style="color: var(--text-muted);">Ma'lumotlaringizni qoldiring, siz bilan 30 daqiqa ichida bog'lanamiz.</p>
+
+            <form id="booking-form" class="space-y-4">
+                <div>
+                    <label for="book-service" class="block text-xs font-semibold uppercase mb-1.5" style="color: var(--text-muted);">Yo'nalishni tanlang</label>
+                    <select id="book-service" class="w-full px-4 py-3 rounded-xl border psy-card text-sm focus:outline-none focus:ring-2 focus:ring-[#4A7C65]">
+                        <option value="Individual konsultatsiya">Individual konsultatsiya</option>
+                        <option value="Oilaviy psixologiya">Oilaviy psixologiya</option>
+                        <option value="Stress va depressiya bilan ishlash">Stress va depressiya bilan ishlash</option>
+                        <option value="O'zini anglash va shaxsiy rivojlanish">O'zini anglash va shaxsiy rivojlanish</option>
+                        <option value="Stress testi natijasi bo'yicha konsultatsiya">Stress testi natijasi bo'yicha konsultatsiya</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label for="book-date" class="block text-xs font-semibold uppercase mb-1.5" style="color: var(--text-muted);">Qulay sana</label>
+                        <input type="date" id="book-date" required class="w-full px-4 py-3 rounded-xl border psy-card text-sm focus:outline-none focus:ring-2 focus:ring-[#4A7C65]">
+                    </div>
+                    <div>
+                        <label for="book-time" class="block text-xs font-semibold uppercase mb-1.5" style="color: var(--text-muted);">Qulay vaqt</label>
+                        <select id="book-time" class="w-full px-4 py-3 rounded-xl border psy-card text-sm focus:outline-none focus:ring-2 focus:ring-[#4A7C65]">
+                            <option value="10:00">10:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="19:00">19:00</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="book-name" class="block text-xs font-semibold uppercase mb-1.5" style="color: var(--text-muted);">Ismingiz (yoki taxallus)</label>
+                    <input type="text" id="book-name" required maxlength="40" placeholder="Masalan: Nilufar" class="w-full px-4 py-3 rounded-xl border psy-card text-sm focus:outline-none focus:ring-2 focus:ring-[#4A7C65]">
+                </div>
+
+                <div>
+                    <label for="book-contact" class="block text-xs font-semibold uppercase mb-1.5" style="color: var(--text-muted);">Telefon raqam yoki Telegram username</label>
+                    <input type="text" id="book-contact" required maxlength="45" placeholder="+998 90 123 45 67 yoki @username" class="w-full px-4 py-3 rounded-xl border psy-card text-sm focus:outline-none focus:ring-2 focus:ring-[#4A7C65]">
+                </div>
+
+                <button type="submit" class="w-full py-4 rounded-2xl text-white font-semibold text-sm shadow-lg transition-opacity hover:opacity-95" style="background-color: var(--sage);">
+                    ✅ Tasdiqlash va yozilish
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         JAVASCRIPT: BARCHA PSIXOLOGIK VA INTERAKTIV FUNKSIYALAR
+         ========================================================= -->
+    <script>
+        // ---------------------------------------------------------
+        // 1. TOAST BILDIRISHNOMA TIZIMI
+        // ---------------------------------------------------------
+        function showToast(message, icon = '🌿') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'pointer-events-auto flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-[#1F2E28] text-white dark:bg-[#FAF8F5] dark:text-[#1F2E28] text-sm font-semibold shadow-xl transform transition-all duration-300 translate-y-4 opacity-0';
+            toast.innerHTML = `<span class="text-lg">${icon}</span><span>${message}</span>`;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-4', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // ---------------------------------------------------------
+        // 2. TUNGI VA KUNDUZGI REJIM
+        // ---------------------------------------------------------
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            localStorage.setItem('psy_iroda_theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-toggle-btn').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        if (localStorage.getItem('psy_iroda_theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.getElementById('theme-toggle-btn').textContent = '☀️';
+        }
+
+        // ---------------------------------------------------------
+        // 3. MOBIL MENYU VA XIZMATLAR BATAFSIL BO'LIMI
+        // ---------------------------------------------------------
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileBtn.addEventListener('click', () => {
+            const hidden = mobileMenu.classList.contains('hidden');
+            mobileMenu.classList.toggle('hidden');
+            document.getElementById('icon-open').classList.toggle('hidden', hidden);
+            document.getElementById('icon-close').classList.toggle('hidden', !hidden);
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                document.getElementById('icon-open').classList.remove('hidden');
+                document.getElementById('icon-close').classList.add('hidden');
+            });
+        });
+
+        function toggleServiceDetail(id, btn) {
+            const detailBox = document.getElementById(`service-detail-${id}`);
+            const isHidden = detailBox.classList.contains('hidden');
+            detailBox.classList.toggle('hidden');
+            btn.textContent = isHidden ? 'Yopish ↑' : 'Batafsil ma\'lumot ↓';
+        }
+
+        // ---------------------------------------------------------
+        // 4. INTERAKTIV PSIXOLOGIK STRESS TESTI (5 SAVOL)
+        // ---------------------------------------------------------
+        const quizData = [
+            {
+                q: "So'nggi ikki hafta ichida o'zingizni sababsiz bezovta, tarang yoki ichki xavotirda his qildingizmi?",
+                options: [
+                    { text: "Umuman yo'q, o'zimni xotirjam his qildim", score: 0 },
+                    { text: "Ba'zi kunlarda biroz sezildi", score: 1 },
+                    { text: "Ko'p kunlarda bezovtalik hamroh bo'ldi", score: 2 },
+                    { text: "Deyarli har kuni kuchli taranglik sezdim", score: 3 }
+                ]
+            },
+            {
+                q: "Uyqu sifatingiz va ertalab uyg'onganingizdagi quvvatingiz qanday?",
+                options: [
+                    { text: "Yaxshi uxlayman va tetik uyg'onaman", score: 0 },
+                    { text: "Vaqti-vaqti bilan kech uxlab qolaman", score: 1 },
+                    { text: "Uxlash qiyin yoki ertalab charchoq bilan uyg'onaman", score: 2 },
+                    { text: "Uyqum buzilgan, kun bo'yi quvvatsiz yuraman", score: 3 }
+                ]
+            },
+            {
+                q: "Kundalik ishlar yoki odatda sizga zavq beradigan mashg'ulotlarga qiziqishingiz qanday?",
+                options: [
+                    { text: "Avvalgidek qiziqish va zavq bilan bajaraman", score: 0 },
+                    { text: "Biroz ishtiyoq pasayganini sezyapman", score: 1 },
+                    { text: "Ko'p narsaga hafsalam yo'q, majburan bajaraman", score: 2 },
+                    { text: "Hech narsadan quvonch va ma'no topa olmayapman", score: 3 }
+                ]
+            },
+            {
+                q: "Diqqatni jamlash va oddiy qarorlarni qabul qilish sizga qanchalik oson?",
+                options: [
+                    { text: "Fikrim tiniq, qarorlarni oson qabul qilaman", score: 0 },
+                    { text: "Ba'zan chalg'ish va ikkilanish bo'ladi", score: 1 },
+                    { text: "Diqqatimni jamlash ancha qiyinlashgan", score: 2 },
+                    { text: "Xayolim tarqoq, hatto kichik qaror ham qiynaydi", score: 3 }
+                ]
+            },
+            {
+                q: "Atrofdagilar bilan muloqotda hissiyotlaringizni nazorat qilish qanday kechmoqda?",
+                options: [
+                    { text: "Sabrli va muvozanatli munosabatdaman", score: 0 },
+                    { text: "Ba'zan tez ta'sirlanib qolyapman", score: 1 },
+                    { text: "Arzimagan narsalarga ham asabiylashaman yoki yig'lagim keladi", score: 2 },
+                    { text: "Hissiy portlashlar yoki to'liq ichimga yopilish holatidaman", score: 3 }
+                ]
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let totalQuizScore = 0;
+
+        function renderQuizQuestion() {
+            const item = quizData[currentQuizIndex];
+            document.getElementById('quiz-step-label').textContent = `${currentQuizIndex + 1}-savol / ${quizData.length}`;
+            const percent = Math.round(((currentQuizIndex + 1) / quizData.length) * 100);
+            document.getElementById('quiz-percent-label').textContent = `${percent}%`;
+            document.getElementById('quiz-progress-bar').style.width = `${percent}%`;
+            document.getElementById('quiz-question').textContent = item.q;
+
+            const optionsEl = document.getElementById('quiz-options');
+            optionsEl.innerHTML = '';
+
+            item.options.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-4 rounded-2xl border psy-card hover:border-[#4A7C65] hover:bg-[#4A7C65]/10 transition-all text-sm sm:text-base font-medium flex items-center justify-between gap-3';
+                btn.innerHTML = `<span>${opt.text}</span><span class="text-xs opacity-50">→</span>`;
+                btn.onclick = () => selectQuizAnswer(opt.score);
+                optionsEl.appendChild(btn);
+            });
+        }
+
+        function selectQuizAnswer(score) {
+            totalQuizScore += score;
+            currentQuizIndex++;
+            if (currentQuizIndex < quizData.length) {
+                renderQuizQuestion();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            const resultBox = document.getElementById('quiz-result');
+            resultBox.classList.remove('hidden');
+
+            const badge = document.getElementById('result-badge');
+            const title = document.getElementById('result-title');
+            const desc = document.getElementById('result-desc');
+            const advice = document.getElementById('result-advice');
+
+            if (totalQuizScore <= 4) {
+                badge.textContent = `Natija: ${totalQuizScore} / 15 ball • Barqaror holat`;
+                badge.style.backgroundColor = '#DCFCE7';
+                badge.style.color = '#166534';
+                title.textContent = "Ruhiy muvozanatingiz yaxshi holatda 🌿";
+                desc.textContent = "Siz hozirda kundalik stresslarni yetarlicha yaxshi boshqaryapsiz. Ichki resurslaringiz va hissiy barqarorligingiz me'yorda.";
+                advice.textContent = "Ushbu holatni saqlab qolish uchun uyqu rejimiga rioya qiling, o'zingizga yoqadigan mashg'ulotlarga vaqt ajrating va profilaktika sifatida shaxsiy rivojlanish sessiyalarida qatnashishingiz mumkin.";
+            } else if (totalQuizScore <= 9) {
+                badge.textContent = `Natija: ${totalQuizScore} / 15 ball • O'rtacha emotsional charchoq`;
+                badge.style.backgroundColor = '#FEF3C7';
+                badge.style.color = '#92400E';
+                title.textContent = "Sizda o'rtacha stress va charchoq belgilari bor 🌤️";
+                desc.textContent = "So'nggi paytlarda mas'uliyat va tashvishlar biroz ko'paygan ko'rinadi. Organizmingiz va ruhiyatingiz sizdan biroz to'xtab, o'zingizga e'tibor berishingizni so'ramoqda.";
+                advice.textContent = "Har kuni kamida 15 daqiqa raqamli qurilmalarsiz dam oling, pastdagi 4-7-8 nafas mashqini bajaring va ichki kechinmalaringizni psixolog bilan birga tahlil qilishni o'ylab ko'ring.";
+            } else {
+                badge.textContent = `Natija: ${totalQuizScore} / 15 ball • Yuqori emotsional zo'riqish`;
+                badge.style.backgroundColor = '#FEE2E2';
+                badge.style.color = '#991B1B';
+                title.textContent = "Sizga hozir mehrli qo'llab-quvvatlash zarur 🤍";
+                desc.textContent = "Siz ancha vaqtdan beri kuchli ichki bosim, xavotir yoki emotsional charchoqni yolg'iz o'zingiz ko'tarib yuribsiz. Bu og'irlikni yolg'iz yengishga majbur emassiz.";
+                advice.textContent = "Iltimos, o'zingizga nisbatan talabchanlikni kamaytiring. Psixolog bilan xavfsiz suhbat qurish sizga yengillik beradi va bu holatdan chiqish yo'lini topishga yordam beradi.";
+            }
+        }
+
+        function restartQuiz() {
+            currentQuizIndex = 0;
+            totalQuizScore = 0;
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            renderQuizQuestion();
+        }
+
+        renderQuizQuestion();
+
+        // ---------------------------------------------------------
+        // 5. 4-7-8 NAFAS OLISH MASHQI TAYMERI
+        // ---------------------------------------------------------
+        let breathingRunning = false;
+        let breathTimeout = null;
+        let breathCountdownInterval = null;
+        let completedBreathCycles = 0;
+
+        const breathCircle = document.getElementById('breath-circle');
+        const phaseText = document.getElementById('breath-phase-text');
+        const timerNum = document.getElementById('breath-timer-num');
+        const cycleCounter = document.getElementById('breath-cycle-counter');
+
+        function runBreathCountdown(seconds, label, className, onComplete) {
+            if (!breathingRunning) return;
+            breathCircle.classList.remove('inhale', 'hold', 'exhale');
+            void breathCircle.offsetWidth;
+            breathCircle.classList.add(className);
+
+            phaseText.textContent = label;
+            let remaining = seconds;
+            timerNum.textContent = remaining;
+
+            clearInterval(breathCountdownInterval);
+            breathCountdownInterval = setInterval(() => {
+                remaining--;
+                if (remaining > 0) {
+                    timerNum.textContent = remaining;
+                } else {
+                    clearInterval(breathCountdownInterval);
+                }
+            }, 1000);
+
+            breathTimeout = setTimeout(() => {
+                if (breathingRunning && onComplete) onComplete();
+            }, seconds * 1000);
+        }
+
+        function executeBreathCycle() {
+            if (!breathingRunning) return;
+            // 1. 4 soniya nafas olish
+            runBreathCountdown(4, "Nafas oling...", "inhale", () => {
+                // 2. 7 soniya ushlab turish
+                runBreathCountdown(7, "Ushlab turing...", "hold", () => {
+                    // 3. 8 soniya sekin chiqarish
+                    runBreathCountdown(8, "Sekin chiqaring...", "exhale", () => {
+                        completedBreathCycles++;
+                        cycleCounter.textContent = `Bajarilgan sikllar: ${completedBreathCycles}`;
+                        executeBreathCycle();
+                    });
+                });
+            });
+        }
+
+        function startBreathingExercise() {
+            if (breathingRunning) return;
+            breathingRunning = true;
+            document.getElementById('breath-start-btn').textContent = "🌿 Mashq davom etmoqda...";
+            executeBreathCycle();
+        }
+
+        function stopBreathingExercise() {
+            breathingRunning = false;
+            clearTimeout(breathTimeout);
+            clearInterval(breathCountdownInterval);
+            breathCircle.classList.remove('inhale', 'hold', 'exhale');
+            phaseText.textContent = "Tayyormisiz?";
+            timerNum.textContent = "4-7-8";
+            document.getElementById('breath-start-btn').textContent = "▶ Mashqni boshlash";
+        }
+
+        // ---------------------------------------------------------
+        // 6. KUNLIK PSIXOLOGIK AFFIRMATSIYA GENERATORI
+        // ---------------------------------------------------------
+        const affirmationsData = {
+            xotirjamlik: [
+                {
+                    text: "Men hozirgi lahzada xavfsizman. Men hamma narsani bir zumda hal qilishga majbur emasman — kichik qadamlar ham yetarli.",
+                    note: "Amaliy maslahat: Yelkalaringizni bo'sh qo'ying va jag' mushaklarini bo'shashtiring."
+                },
+                {
+                    text: "Men nazorat qila olmaydigan narsalarni qo'yib yuboraman va bor e'tiborimni o'z ichki xotirjamligimga qarataman.",
+                    note: "Amaliy maslahat: Bugun o'zingizga 10 daqiqa sokinlik va bir piyola iliq choy sovg'a qiling."
+                },
+                {
+                    text: "Mening hissiyotlarim tabiiy. Men o'zimga dam olish va tiklanish uchun ruxsat beraman.",
+                    note: "Amaliy maslahat: Charchoq — bu zaiflik emas, balki tana va qalbning dam olish haqidagi signalidir."
+                }
+            ],
+            ishonch: [
+                {
+                    text: "Menda hayotiy qiyinchiliklarni yengib o'tish uchun yetarlicha ichki kuch, donolik va tajriba bor.",
+                    note: "Amaliy maslahat: O'tgan yili yengib o'tgan 3 ta qiyin vaziyatingizni eslang."
+                },
+                {
+                    text: "Men xato qilishdan qo'rqmayman, chunki har bir tajriba meni yanada kuchliroq va ongliroq qiladi.",
+                    note: "Amaliy maslahat: Bugun o'zingizni kichik yutug'ingiz uchun ham albatta maqtang."
+                },
+                {
+                    text: "Mening fikrim, vaqtim va shaxsiy chegaralarim hurmatga loyiq.",
+                    note: "Amaliy maslahat: O'zingizga zarar yetkazadigan narsalarga xotirjam 'yo'q' deyishni mashq qiling."
+                }
+            ],
+            qabul: [
+                {
+                    text: "Men mukammal bo'lishga majbur emasman. Men shundayligimcha ham mehr va qadrga loyiqman.",
+                    note: "Amaliy maslahat: O'zingizga eng yaqin do'stingizga gapirgandek mehr bilan munosabatda bo'ling."
+                },
+                {
+                    text: "Men o'tmishdagi xatolarim uchun o'zimni kechiraman va bugungi kunimni yangi sahifadan boshlayman.",
+                    note: "Amaliy maslahat: O'tmish — dars olish uchun, hozirgi lahza esa yashash uchundir."
+                },
+                {
+                    text: "Men o'zimni boshqalar bilan solishtirmayman — mening o'z hayot yo'lim va o'z sur'atim bor.",
+                    note: "Amaliy maslahat: Har bir gul o'z vaqtida ochiladi."
+                }
+            ]
+        };
+
+        let currentAffCategory = 'xotirjamlik';
+        let currentAffIndex = 0;
+
+        function setAffirmationCategory(cat) {
+            currentAffCategory = cat;
+            currentAffIndex = 0;
+            document.querySelectorAll('.aff-cat-btn').forEach(btn => {
+                btn.style.backgroundColor = '';
+                btn.style.color = '';
+                if (btn.dataset.cat === cat) {
+                    btn.style.backgroundColor = 'var(--sage)';
+                    btn.style.color = '#FFFFFF';
+                }
+            });
+            updateAffirmationUI();
+        }
+
+        function nextAffirmation() {
+            const list = affirmationsData[currentAffCategory];
+            currentAffIndex = (currentAffIndex + 1) % list.length;
+            updateAffirmationUI();
+        }
+
+        function updateAffirmationUI() {
+            const item = affirmationsData[currentAffCategory][currentAffIndex];
+            document.getElementById('affirmation-text').textContent = `"${item.text}"`;
+            document.getElementById('affirmation-note').textContent = `💡 ${item.note}`;
+        }
+
+        function copyAffirmation() {
+            const text = document.getElementById('affirmation-text').textContent;
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showToast('Affirmatsiya nusxalandi!', '📋');
+        }
+
+        setAffirmationCategory('xotirjamlik');
+
+        // ---------------------------------------------------------
+        // 7. FAQ ACCORDION
+        // ---------------------------------------------------------
+        function toggleFaq(num) {
+            const body = document.getElementById(`faq-body-${num}`);
+            const icon = document.getElementById(`faq-icon-${num}`);
+            const isHidden = body.classList.contains('hidden');
+            body.classList.toggle('hidden');
+            icon.textContent = isHidden ? '−' : '+';
+        }
+
+        // ---------------------------------------------------------
+        // 8. ONLINE APPOINTMENT BOOKING & LOCALSTORAGE HISTORY
+        // ---------------------------------------------------------
+        const bookingModal = document.getElementById('booking-modal');
+        const dateInput = document.getElementById('book-date');
+
+        // Bugungi sanani minimal sana qilib belgilash
+        const todayStr = new Date().toISOString().split('T')[0];
+        dateInput.min = todayStr;
+        dateInput.value = todayStr;
+
+        function openBookingModal(selectedService = '') {
+            if (selectedService) {
+                const selectEl = document.getElementById('book-service');
+                for (let opt of selectEl.options) {
+                    if (opt.value === selectedService) {
+                        selectEl.value = selectedService;
+                        break;
+                    }
+                }
+            }
+            bookingModal.classList.remove('hidden');
+            bookingModal.classList.add('flex');
+        }
+
+        function closeBookingModal() {
+            bookingModal.classList.add('hidden');
+            bookingModal.classList.remove('flex');
+        }
+
+        let bookingHistory = JSON.parse(localStorage.getItem('psy_iroda_bookings')) || [];
+
+        function renderBookingHistory() {
+            const listEl = document.getElementById('booking-history-list');
+            if (bookingHistory.length === 0) {
+                listEl.innerHTML = `<p style="color: var(--text-muted);">Hozircha faol yozuvlar yo'q. Yuqoridagi tugma orqali qabulga yozilishingiz mumkin.</p>`;
+                return;
+            }
+
+            listEl.innerHTML = bookingHistory.map(b => `
+                <div class="p-3 rounded-xl psy-soft-bg flex items-center justify-between gap-2">
+                    <div>
+                        <p class="font-bold">${escapeHTML(b.service)}</p>
+                        <p class="text-[11px]" style="color: var(--text-muted);">📅 ${escapeHTML(b.date)} • ⏰ ${escapeHTML(b.time)} (${escapeHTML(b.name)})</p>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold" style="background-color: var(--bg-card); color: var(--sage);">Yuborildi</span>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('booking-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const service = document.getElementById('book-service').value;
+            const date = document.getElementById('book-date').value;
+            const time = document.getElementById('book-time').value;
+            const name = document.getElementById('book-name').value.trim();
+            const contact = document.getElementById('book-contact').value.trim();
+
+            if (!name || !contact) return;
+
+            bookingHistory.unshift({ id: Date.now(), service, date, time, name, contact });
+            localStorage.setItem('psy_iroda_bookings', JSON.stringify(bookingHistory));
+            renderBookingHistory();
+
+            e.target.reset();
+            dateInput.value = todayStr;
+            closeBookingModal();
+            showToast(`Rahmat, ${name}! ${date} (${time}) ga so'rovingiz qabul qilindi.`, '✅');
+        });
+
+        function clearBookingHistory() {
+            bookingHistory = [];
+            localStorage.removeItem('psy_iroda_bookings');
+            renderBookingHistory();
+            showToast('Yozuvlar tarixi tozalandi', '🗑️');
+        }
+
+        renderBookingHistory();
+
+        // ---------------------------------------------------------
+        // 9. XAVFSIZLIK VA JORIY YIL
+        // ---------------------------------------------------------
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
